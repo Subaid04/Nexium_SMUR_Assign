@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -10,7 +8,8 @@ export default function Home() {
   const [summary, setSummary] = useState("");
   const [urdu, setUrdu] = useState("");
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
     setLoading(true);
     try {
       const res = await fetch("/api/summarise", {
@@ -29,50 +28,50 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[--background] text-[--foreground] px-4 font-sans">
-      <div className="w-full max-w-xl bg-[#f7efe2] p-8 rounded-2xl shadow-lg border border-[#ebdfc8] space-y-6 text-center">
-        <h1 className="text-3xl font-semibold">📝 Blog Summariser</h1>
-        <p className="text-[--muted-foreground] text-sm">
+    <main className="min-h-screen bg-[--background] flex items-center justify-center px-4 py-20 font-sans">
+      <div className="card-glass text-center">
+        <h1 className="text-2xl font-bold mb-6">📝 Blog Summariser</h1>
+        <p className="text-sm text-muted-foreground mb-6">
           Paste a blog URL and get an instant summary with Urdu translation.
         </p>
 
-        <div className="flex flex-col gap-4 mt-4">
-          <Input
-            className="bg-white text-[--foreground] placeholder:text-gray-400 border-gray-300"
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
             placeholder="Paste blog URL..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
-          <Button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="bg-[--accent] text-[--foreground] hover:bg-yellow-400 transition-all"
-          >
+          <button type="submit" disabled={loading}>
             {loading ? "Summarising..." : "Summarise"}
-          </Button>
-        </div>
+          </button>
+        </form>
 
         {summary && (
-          <div className="text-left space-y-6 mt-6">
+          <div className="text-left space-y-6 mt-8">
             <div>
-              <h2 className="text-lg font-semibold">Summary</h2>
-              <p className="bg-white text-black p-4 rounded-xl border border-gray-200">
+              <h2 className="text-lg font-semibold text-[--foreground]">
+                Summary
+              </h2>
+              <p className="bg-white text-[--foreground] p-4 rounded-xl shadow">
                 {summary}
               </p>
             </div>
             <div>
-              <h2 className="text-lg font-semibold">اردو ترجمہ</h2>
-              <p className="bg-green-100 text-right p-4 rounded-xl font-urdu">
+              <h2 className="text-lg font-semibold text-[--foreground]">
+                اردو ترجمہ
+              </h2>
+              <p className="bg-[#e5fbee] text-green-900 p-4 rounded-xl text-right">
                 {urdu}
               </p>
             </div>
           </div>
         )}
-      </div>
 
-      <p className="text-sm text-[--muted-foreground] mt-6 text-center">
-        Built with ❤️ using Next.js, TailwindCSS & Supabase
-      </p>
+        <p className="text-sm text-muted-foreground mt-6">
+          Built with ❤️ using Next.js, TailwindCSS & Supabase
+        </p>
+      </div>
     </main>
   );
 }
