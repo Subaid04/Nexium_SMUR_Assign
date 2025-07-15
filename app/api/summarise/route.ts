@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import dictionary from "@/lib/dictionary.json";
 import supabase from "@/lib/supabase";
+import { fulltexts } from "@/lib/mongodb";
 
-// Translate using dictionary
+// 🔁 Translate using dictionary
 function translateToUrdu(text: string): string {
   return text
     .split(/\s+/)
@@ -14,7 +15,7 @@ function translateToUrdu(text: string): string {
     .join(" ");
 }
 
-// Scrape blog content
+// 🌐 Scrape blog content
 async function scrapeText(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
@@ -22,7 +23,7 @@ async function scrapeText(url: string): Promise<string> {
     });
     const html = await res.text();
     const $ = cheerio.load(html);
-    let content = $("article").text() || $("p").text();
+    const content = $("article").text() || $("p").text();
     return content.replace(/\s+/g, " ").trim().slice(0, 3000);
   } catch (err) {
     console.error("Scrape error:", err);
@@ -30,7 +31,7 @@ async function scrapeText(url: string): Promise<string> {
   }
 }
 
-// API Handler
+// 🚀 POST handler
 export async function POST(req: NextRequest) {
   const { url } = await req.json();
 
@@ -46,15 +47,30 @@ export async function POST(req: NextRequest) {
   const summary = fullText.split(". ").slice(0, 2).join(". ") + ".";
   const urdu = translateToUrdu(summary);
 
-  // 🧠 Save to Supabase
-  const { error } = await supabase
+  // 💾 Save summary to Supabase
+  const { error: supabaseError } = await supabase
     .from("summaries")
     .insert([{ url, summary, urdu }]);
 
-  if (error) {
-    console.error("Supabase insert error:", error.message);
+  if (supabaseError) {
+    console.error("❌ Supabase insert error:", supabaseError.message);
     return NextResponse.json(
-      { error: "Failed to save to database." },
+      { error: "Failed to save to Supabase." },
+      { status: 500 }
+    );
+  }
+
+  // 💾 Save fullText to MongoDB
+  try {
+    await fulltexts.insertOne({
+      url,
+      fullText,
+      createdAt: new Date(),
+    });
+  } catch (mongoError) {
+    console.error("❌ MongoDB insert error:", mongoError);
+    return NextResponse.json(
+      { error: "Failed to save to MongoDB." },
       { status: 500 }
     );
   }
