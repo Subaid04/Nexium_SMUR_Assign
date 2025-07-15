@@ -29,33 +29,50 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen p-8 bg-white text-black space-y-6">
-      <h1 className="text-2xl font-bold">📝 Blog Summariser</h1>
-      <div className="flex gap-4 max-w-xl">
-        <Input
-          placeholder="Paste blog URL here..."
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? "Summarising..." : "Summarise"}
-        </Button>
+    <main className="min-h-screen flex items-center justify-center bg-[--background] text-[--foreground] px-4 font-sans">
+      <div className="w-full max-w-xl bg-[#f7efe2] p-8 rounded-2xl shadow-lg border border-[#ebdfc8] space-y-6 text-center">
+        <h1 className="text-3xl font-semibold">📝 Blog Summariser</h1>
+        <p className="text-[--muted-foreground] text-sm">
+          Paste a blog URL and get an instant summary with Urdu translation.
+        </p>
+
+        <div className="flex flex-col gap-4 mt-4">
+          <Input
+            className="bg-white text-[--foreground] placeholder:text-gray-400 border-gray-300"
+            placeholder="Paste blog URL..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+          <Button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="bg-[--accent] text-[--foreground] hover:bg-yellow-400 transition-all"
+          >
+            {loading ? "Summarising..." : "Summarise"}
+          </Button>
+        </div>
+
+        {summary && (
+          <div className="text-left space-y-6 mt-6">
+            <div>
+              <h2 className="text-lg font-semibold">Summary</h2>
+              <p className="bg-white text-black p-4 rounded-xl border border-gray-200">
+                {summary}
+              </p>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">اردو ترجمہ</h2>
+              <p className="bg-green-100 text-right p-4 rounded-xl font-urdu">
+                {urdu}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
-      {summary && (
-        <div className="mt-8 space-y-4">
-          <div>
-            <h2 className="text-lg font-semibold">Summary</h2>
-            <p className="bg-slate-100 p-4 rounded">{summary}</p>
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold">Urdu Translation</h2>
-            <p className="bg-green-50 p-4 rounded text-right font-urdu">
-              {urdu}
-            </p>
-          </div>
-        </div>
-      )}
+      <p className="text-sm text-[--muted-foreground] mt-6 text-center">
+        Built with ❤️ using Next.js, TailwindCSS & Supabase
+      </p>
     </main>
   );
 }
