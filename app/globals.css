@@ -107,4 +107,43 @@ button:hover {
     line-height: 1.5;
     margin-bottom: 1rem;
   }
+  a {
+    font-size: 0.9rem;
+  }
+  .card-glass {
+    width: 100%;
+    max-width: none;
+  }
+  .card-glass h1 {
+    font-size: 1.5rem;
+  }
+  .card-glass h2 {
+    font-size: 1.25rem;
+  }
+  .card-glass h3 {
+    font-size: 1rem;
+  }
+  .card-glass p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .card-glass input,
+  .card-glass textarea,
+  .card-glass select {
+    font-size: 0.9rem;
+  }
+  .card-glass button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  .card-glass a {
+    font-size: 0.9rem;
+  }
+  .card-glass {
+    padding: 1.5rem;
+    box-shadow: 0 6px 18px rgba(179, 193, 157, 0.1);
+  }
+  .card-glass h1 {
+    font-size: 1.5rem;
+  }
 }
